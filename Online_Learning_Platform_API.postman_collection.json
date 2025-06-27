@@ -1,0 +1,1451 @@
+{
+  "info": {
+    "name": "Online Learning Platform API - Complete Collection",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": "Complete API collection for the Online Learning Platform with all endpoints including authentication, courses, lessons, live classes, tests, educators, progress tracking, subscriptions, doubts, materials, search, and reviews."
+  },
+  "item": [
+    {
+      "name": "Authentication",
+      "item": [
+        {
+          "name": "Register Learner",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Test Learner\",\n  \"email\": \"{{learner_email}}\",\n  \"password\": \"TestPass123\",\n  \"targetExam\": \"JEE\",\n  \"preferredLanguage\": \"English\",\n  \"phone\": \"+1234567890\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/register",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "register"]
+            },
+            "description": "This request uses the name field for registration (name-splitting supported by backend)."
+          },
+          "response": [
+            {
+              "name": "Success",
+              "originalRequest": {},
+              "status": "Created",
+              "code": 201,
+              "_postman_previewlanguage": "json",
+              "header": [],
+              "body": "{\n  \"success\": true,\n  \"message\": \"Registration successful\",\n  \"userId\": 1,\n  \"token\": \"jwt_token_here\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Register Educator",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Dr. Sarah Kumar\",\n  \"email\": \"sarah@example.com\",\n  \"password\": \"securePassword123\",\n  \"mobile\": \"+919876543211\",\n  \"subjects\": [\"Mathematics\", \"Physics\"],\n  \"qualification\": \"PhD in Physics, IIT Delhi\",\n  \"experience\": 8,\n  \"bio\": \"8+ years of teaching experience...\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/educator/register",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "educator", "register"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Learner Login",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{learner_email}}\",\n  \"password\": \"TestPass123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/learner/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "learner", "login"]
+            },
+            "description": "Login endpoint for learners. Returns a JWT token for learner role."
+          },
+          "response": [
+            {
+              "name": "Success",
+              "originalRequest": {},
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [],
+              "body": "{\n  \"success\": true,\n  \"message\": \"Login successful\",\n  \"data\": {\n    \"token\": \"jwt_token_here\",\n    \"user\": {\n      \"id\": 1,\n      \"email\": \"john@example.com\",\n      \"firstName\": \"John\",\n      \"lastName\": \"Doe\",\n      \"role\": \"learner\"\n    }\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Educator Login",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{educator_email}}\",\n  \"password\": \"TestPass123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/educator/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "educator", "login"]
+            },
+            "description": "Login endpoint for educators. Returns a JWT token for educator role."
+          },
+          "response": [
+            {
+              "name": "Success",
+              "originalRequest": {},
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [],
+              "body": "{\n  \"success\": true,\n  \"message\": \"Educator logged in successfully\",\n  \"data\": {\n    \"token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...\",\n    \"educator\": {\n      \"id\": 2,\n      \"email\": \"educator@example.com\",\n      \"firstName\": \"Dr.\",\n      \"lastName\": \"Sharma\"\n    }\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Get Profile",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{learnerToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/profile",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "profile"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Courses",
+      "item": [
+        {
+          "name": "Browse Courses",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/courses",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "courses"]
+            }
+          },
+          "response": [
+            {
+              "name": "Success",
+              "originalRequest": {},
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [],
+              "body": "{\n  \"success\": true,\n  \"courses\": [\n    {\n      \"id\": 1,\n      \"title\": \"Complete JEE Main Mathematics\",\n      \"educator\": {\n        \"id\": 1,\n        \"name\": \"Prof Kumar\",\n        \"rating\": 4.8,\n        \"image\": \"https://example.com/default-educator.png\"\n      },\n      \"targetExam\": \"JEE Main\",\n      \"duration\": \"1 months\",\n      \"totalLessons\": 45,\n      \"language\": \"English\",\n      \"price\": 2999,\n      \"discountedPrice\": 2499,\n      \"rating\": 4.8,\n      \"enrolledStudents\": 5,\n      \"thumbnail\": \"https://storage.example.com/thumbnails/jee-math.jpg?token=1750824134080&expires=1750827734080\",\n      \"highlights\": [\n        \"HD Video Lectures\",\n        \"Practice Questions\",\n        \"Mock Tests\",\n        \"Doubt Sessions\",\n        \"Study Material\"\n      ]\n    },\n    {\n      \"id\": 2,\n      \"title\": \"NEET Biology Complete Course\",\n      \"educator\": {\n        \"id\": 2,\n        \"name\": \"Dr Sharma\",\n        \"rating\": 4.9,\n        \"image\": \"https://example.com/default-educator.png\"\n      },\n      \"targetExam\": \"NEET\",\n      \"duration\": \"2 months\",\n      \"totalLessons\": 60,\n      \"language\": \"English\",\n      \"price\": 3999,\n      \"discountedPrice\": 3499,\n      \"rating\": 4.9,\n      \"enrolledStudents\": 3,\n      \"thumbnail\": \"https://storage.example.com/thumbnails/neet-bio.jpg?token=1750824134080&expires=1750827734080\",\n      \"highlights\": [\n        \"Live Classes\",\n        \"Recorded Lectures\",\n        \"Practice Tests\",\n        \"Doubt Resolution\",\n        \"Study Notes\"\n      ]\n    }\n  ]\n}"
+            }
+          ]
+        },
+        {
+          "name": "Browse Courses with Filters",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/courses?exam=JEE%20Main&subject=Mathematics&sort=popular",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "courses"],
+              "query": [
+                { "key": "exam", "value": "JEE Main" },
+                { "key": "subject", "value": "Mathematics" },
+                { "key": "sort", "value": "popular" }
+              ]
+            },
+            "description": "Browse courses with various filters. Supports filtering by exam, subject, type, educator, and sorting by popularity, price, or rating."
+          },
+          "response": [
+            {
+              "name": "Success with Filters",
+              "originalRequest": {},
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [],
+              "body": "{\n  \"success\": true,\n  \"courses\": [\n    {\n      \"id\": 1,\n      \"title\": \"Complete JEE Main Mathematics\",\n      \"educator\": {\n        \"id\": 1,\n        \"name\": \"Prof Kumar\",\n        \"rating\": 4.8,\n        \"image\": \"https://example.com/default-educator.png\"\n      },\n      \"targetExam\": \"JEE Main\",\n      \"duration\": \"1 months\",\n      \"totalLessons\": 45,\n      \"language\": \"English\",\n      \"price\": 2999,\n      \"discountedPrice\": 2499,\n      \"rating\": 4.8,\n      \"enrolledStudents\": 5,\n      \"thumbnail\": \"https://storage.example.com/thumbnails/jee-math.jpg?token=1750824134080&expires=1750827734080\",\n      \"highlights\": [\n        \"HD Video Lectures\",\n        \"Practice Questions\",\n        \"Mock Tests\",\n        \"Doubt Sessions\",\n        \"Study Material\"\n      ]\n    }\n  ]\n}"
+            },
+            {
+              "name": "No Results",
+              "originalRequest": {},
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [],
+              "body": "{\n  \"success\": true,\n  \"courses\": []\n}"
+            }
+          ]
+        },
+        {
+          "name": "Get Course Details",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/courses/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "courses", "1"]
+            },
+            "description": "Get detailed information about a specific course including syllabus, features, educator details, and reviews."
+          },
+          "response": [
+            {
+              "name": "Success",
+              "originalRequest": {},
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [],
+              "body": "{\n  \"success\": true,\n  \"course\": {\n    \"id\": 1,\n    \"title\": \"Complete JEE Main Mathematics\",\n    \"description\": \"Comprehensive course covering all topics for JEE Main Mathematics with practice questions and mock tests\",\n    \"educator\": {\n      \"id\": 1,\n      \"name\": \"Prof Kumar\",\n      \"qualification\": \"Ph.D. Mathematics, IIT Delhi\",\n      \"experience\": \"15 years\",\n      \"rating\": 4.8\n    },\n    \"syllabus\": [\n      {\n        \"chapter\": \"Algebra\",\n        \"lessons\": [\n          {\n            \"id\": 1,\n            \"title\": \"Introduction to Algebra\",\n            \"duration\": \"45 mins\",\n            \"isFree\": true\n          },\n          {\n            \"id\": 2,\n            \"title\": \"Linear Equations\",\n            \"duration\": \"60 mins\",\n            \"isFree\": false\n          }\n        ]\n      },\n      {\n        \"chapter\": \"Calculus\",\n        \"lessons\": [\n          {\n            \"id\": 3,\n            \"title\": \"Quadratic Equations\",\n            \"duration\": \"75 mins\",\n            \"isFree\": false\n          },\n          {\n            \"id\": 4,\n            \"title\": \"Trigonometry Basics\",\n            \"duration\": \"50 mins\",\n            \"isFree\": false\n          }\n        ]\n      },\n      {\n        \"chapter\": \"Trigonometry\",\n        \"lessons\": [\n          {\n            \"id\": 5,\n            \"title\": \"Calculus Fundamentals\",\n            \"duration\": \"90 mins\",\n            \"isFree\": false\n          }\n        ]\n      }\n    ],\n    \"features\": {\n      \"liveClasses\": 0,\n      \"recordedVideos\": 45,\n      \"mockTests\": 10,\n      \"pdfNotes\": true,\n      \"doubtSupport\": true\n    },\n    \"validity\": \"1 months\",\n    \"price\": 2999,\n    \"reviews\": [\n      {\n        \"id\": 1,\n        \"userId\": 1,\n        \"courseId\": 1,\n        \"rating\": 5,\n        \"review\": \"Excellent course! The explanations are very clear and the practice questions are helpful.\",\n        \"createdAt\": \"2025-06-24 08:28:11\",\n        \"updatedAt\": \"2025-06-24 08:28:11\",\n        \"firstName\": \"John\",\n        \"lastName\": \"Doe\"\n      },\n      {\n        \"id\": 6,\n        \"userId\": 6,\n        \"courseId\": 1,\n        \"rating\": 5,\n        \"review\": \"Best mathematics course for JEE Main. Highly recommended!\",\n        \"createdAt\": \"2025-06-24 08:28:11\",\n        \"updatedAt\": \"2025-06-24 08:28:11\",\n        \"firstName\": \"Emma\",\n        \"lastName\": \"Davis\"\n      }\n    ]\n  }\n}"
+            },
+            {
+              "name": "Course Not Found",
+              "originalRequest": {},
+              "status": "Not Found",
+              "code": 404,
+              "_postman_previewlanguage": "json",
+              "header": [],
+              "body": "{\n  \"success\": false,\n  \"message\": \"Course not found\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Enroll in Course",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{learnerToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/courses/{{courseId}}/enroll",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "courses", "{{courseId}}", "enroll"],
+              "variable": [
+                {
+                  "key": "courseId",
+                  "value": "1",
+                  "description": "ID of the course to enroll in"
+                }
+              ]
+            },
+            "description": "Enroll the authenticated learner in the specified course. Requires a valid learner token. Returns 409 if already enrolled.\n\n**URL Parameters:**\n- courseId: ID of the course to enroll in\n\n**Headers:**\n- Authorization: Bearer token (required)\n- Content-Type: application/json\n\n**Response Codes:**\n- 201: Successfully enrolled\n- 409: Already enrolled\n- 404: Course not found\n- 401: Unauthorized\n- 403: Forbidden (not a learner)"
+          },
+          "response": [
+            {
+              "name": "Success",
+              "originalRequest": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{learnerToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/courses/1/enroll",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "courses", "1", "enroll"]
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "_postman_previewlanguage": "json",
+              "header": [
+                { "key": "Content-Type", "value": "application/json" }
+              ],
+              "body": "{\n  \"success\": true,\n  \"message\": \"Successfully enrolled in course\",\n  \"data\": {\n    \"enrollmentId\": 123,\n    \"courseId\": 1,\n    \"enrolledAt\": \"2025-06-24T12:34:56.789Z\"\n  }\n}"
+            },
+            {
+              "name": "Already Enrolled",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  { "key": "Authorization", "value": "Bearer {{learnerToken}}" },
+                  { "key": "Content-Type", "value": "application/json" }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/courses/1/enroll",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "courses", "1", "enroll"]
+                }
+              },
+              "status": "Conflict",
+              "code": 409,
+              "_postman_previewlanguage": "json",
+              "header": [
+                { "key": "Content-Type", "value": "application/json" }
+              ],
+              "body": "{\n  \"success\": false,\n  \"message\": \"You are already enrolled in this course\"\n}"
+            },
+            {
+              "name": "Course Not Found",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  { "key": "Authorization", "value": "Bearer {{learnerToken}}" },
+                  { "key": "Content-Type", "value": "application/json" }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/courses/999/enroll",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "courses", "999", "enroll"]
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "_postman_previewlanguage": "json",
+              "header": [
+                { "key": "Content-Type", "value": "application/json" }
+              ],
+              "body": "{\n  \"success\": false,\n  \"message\": \"Course not found\"\n}"
+            },
+            {
+              "name": "Unauthorized",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  { "key": "Content-Type", "value": "application/json" }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/courses/1/enroll",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "courses", "1", "enroll"]
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "_postman_previewlanguage": "json",
+              "header": [
+                { "key": "Content-Type", "value": "application/json" }
+              ],
+              "body": "{\n  \"success\": false,\n  \"message\": \"Access token required\"\n}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Lessons",
+      "item": [
+        {
+          "name": "Get Lesson Details",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{learnerToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/lessons/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "lessons", "1"]
+            },
+            "description": "Get details of a lesson, including progress and navigation. Requires enrollment and a valid learner token."
+          },
+          "response": [
+            {
+              "name": "Success",
+              "originalRequest": {},
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                { "key": "Content-Type", "value": "application/json" }
+              ],
+              "body": "{\n  \"success\": true,\n  \"lesson\": {\n    \"id\": 1001,\n    \"title\": \"Introduction to Mechanics\",\n    \"description\": \"Basic concepts of mechanics including force, motion, and energy. This lesson covers fundamental principles that form the foundation of classical mechanics.\",\n    \"videoUrl\": \"https://secure-cdn.example.com/videos/lesson_1001.mp4\",\n    \"duration\": 2700,\n    \"resources\": [\n      {\n        \"type\": \"pdf\",\n        \"title\": \"Mechanics Notes\",\n        \"url\": \"https://secure-cdn.example.com/materials/mechanics_notes.pdf\"\n      },\n      {\n        \"type\": \"pdf\",\n        \"title\": \"Practice Problems\",\n        \"url\": \"https://secure-cdn.example.com/materials/mechanics_practice.pdf\"\n      }\n    ],\n    \"nextLesson\": {\n      \"id\": 1002,\n      \"title\": \"Laws of Motion\"\n    }\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Update Lesson Progress",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{learnerToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"watchedDuration\": 1350,\n  \"totalDuration\": 2700,\n  \"status\": \"in_progress\",\n  \"timeSpent\": 1350\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/lessons/1/progress",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "lessons", "1", "progress"]
+            },
+            "description": "Update lesson progress for a learner. Requires authentication and enrollment.\n\nRequest body fields:\n- watchedDuration (number, seconds)\n- totalDuration (number, seconds)\n- status (string: 'not_started', 'in_progress', 'completed')\n- timeSpent (number, seconds)\n\nStatus must be one of 'not_started', 'in_progress', or 'completed'."
+          },
+          "response": [
+            {
+              "code": 200,
+              "body": "{\n  \"success\": true,\n  \"message\": \"Lesson progress updated successfully\",\n  \"data\": {\n    \"lesson\": {\n      \"id\": 1,\n      \"title\": \"Introduction to Mechanics\",\n      \"description\": \"Basic concepts of mechanics\",\n      \"videoUrl\": \"secure_video_url\",\n      \"duration\": 2700\n    },\n    \"progress\": {\n      \"watchedDuration\": 1350,\n      \"totalDuration\": 2700,\n      \"status\": \"in_progress\",\n      \"timeSpent\": 1350,\n      \"percentage\": 50\n    }\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Save Lesson Notes",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{learnerToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"timestamp\": 845,\n  \"note\": \"Important formula: F = ma\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/lessons/1/notes",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "lessons", "1", "notes"]
+            },
+            "description": "Save a note for a lesson. Requires authentication and enrollment. Both 'note' (string) and 'timestamp' (number) are required in the request body."
+          },
+          "response": [
+            {
+              "code": 201,
+              "body": "{\n  \"success\": true,\n  \"message\": \"Note saved successfully\",\n  \"data\": {\n    \"noteId\": 1,\n    \"note\": \"Important formula: F = ma\",\n    \"timestamp\": 845\n  }\n}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Live Classes",
+      "item": [
+        {
+          "name": "Get Live Class Schedule",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{learnerToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/live-classes/schedule",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "live-classes", "schedule"]
+            }
+          },
+          "response": {
+            "success": true,
+            "liveClasses": [
+              {
+                "id": 201,
+                "title": "Problem Solving Session - Mechanics",
+                "educator": "Dr. Sarah Kumar",
+                "scheduledAt": "2024-03-22T18:00:00Z",
+                "duration": 90,
+                "courseId": 101,
+                "maxStudents": 500,
+                "enrolled": 342,
+                "status": "scheduled",
+                "joinUrl": null
+              }
+            ]
+          }
+        },
+        {
+          "name": "Get Live Class Schedule with Filters",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{learnerToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/live-classes/schedule?courseId=2&upcoming=true",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "live-classes", "schedule"],
+              "query": [
+                { "key": "courseId", "value": "2" },
+                { "key": "upcoming", "value": "true" }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Join Live Class",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{learnerToken}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/live-classes/1/join",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "live-classes",
+                "1",
+                "join"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Join Live Class Success",
+              "originalRequest": {},
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": true,\n  \"liveClass\": {\n    \"joinUrl\": \"https://live.example.com/class/1\",\n    \"token\": \"dummy_session_token\",\n    \"chatEnabled\": true,\n    \"pollsEnabled\": true\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Ask Live Class Question",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{learnerToken}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"question\": \"Can you explain this formula again?\",\n  \"timestamp\": 1520\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/live-classes/1/questions",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "live-classes",
+                "1",
+                "questions"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Ask Live Class Question Success",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{learnerToken}}",
+                    "type": "text"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"question\": \"Can you explain this formula again?\",\n  \"timestamp\": 1520\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/live-classes/1/questions",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "live-classes",
+                    "1",
+                    "questions"
+                  ]
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": true,\n  \"message\": \"Question submitted successfully\",\n  \"data\": {\n    \"questionId\": 123,\n    \"question\": \"Can you explain this formula again?\",\n    \"askedAt\": \"2024-06-25T12:34:56.789Z\"\n  }\n}\n// Note: timestamp is accepted in the request but not stored in the DB yet."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Tests/Quizzes",
+      "item": [
+        {
+          "name": "Get Available Tests",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{learnerToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/tests",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "tests"]
+            }
+          },
+          "response": [
+            {
+              "name": "Success",
+              "originalRequest": {},
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                { "key": "Content-Type", "value": "application/json" }
+              ],
+              "body": "{\n  \"success\": true,\n  \"tests\": [\n    {\n      \"id\": 301,\n      \"title\": \"JEE Main Mock Test - 1\",\n      \"type\": \"mock\",\n      \"questions\": 90,\n      \"duration\": 180,\n      \"maxMarks\": 360,\n      \"attemptedBy\": 5420,\n      \"avgScore\": 215,\n      \"difficulty\": \"moderate\"\n    }\n  ]\n}"
+            }
+          ]
+        },
+        {
+          "name": "Get Tests with Filters",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{learnerToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/tests?courseId=1&type=mock&subject=Physics",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "tests"],
+              "query": [
+                { "key": "courseId", "value": "1" },
+                { "key": "type", "value": "mock" },
+                { "key": "subject", "value": "Physics" }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Start Test",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{learnerToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": { "mode": "raw", "raw": "{}" },
+            "url": {
+              "raw": "{{baseUrl}}/api/tests/1/start",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "tests", "1", "start"]
+            }
+          },
+          "response": [
+            {
+              "name": "Start Test Success",
+              "originalRequest": {},
+              "status": "Created",
+              "code": 201,
+              "_postman_previewlanguage": "json",
+              "header": [
+                { "key": "Content-Type", "value": "application/json" }
+              ],
+              "body": "{\n  \"success\": true,\n  \"testSession\": {\n    \"sessionId\": \"TEST_SESSION_123\",\n    \"startTime\": \"2024-03-20T10:00:00Z\",\n    \"endTime\": \"2024-03-20T13:00:00Z\",\n    \"questions\": [\n      {\n        \"id\": 1,\n        \"question\": \"A particle moves with...\",\n        \"options\": [\n          \"10 m/s\",\n          \"20 m/s\",\n          \"30 m/s\",\n          \"40 m/s\"\n        ],\n        \"marks\": 4,\n        \"negativeMarks\": 1\n      }\n    ]\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Submit Test Answers",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{learnerToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"answers\": [\n    {\n      \"questionId\": 1,\n      \"selectedOption\": 2\n    }\n  ],\n  \"timeSpent\": 9500\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/tests/session_001/submit",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "tests", "session_001", "submit"]
+            }
+          },
+          "response": [
+            {
+              "name": "Success",
+              "originalRequest": {},
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [],
+              "body": "{\n  \"success\": true,\n  \"result\": {\n    \"score\": 245,\n    \"maxScore\": 360,\n    \"rank\": 1250,\n    \"percentile\": 85.5,\n    \"correct\": 65,\n    \"incorrect\": 20,\n    \"unattempted\": 5,\n    \"analysis\": {\n      \"physics\": {\n        \"score\": 85,\n        \"accuracy\": \"71%\"\n      }\n    }\n  }\n}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Educators",
+      "item": [
+        {
+          "name": "Browse Educators",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/educators",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "educators"],
+              "query": [
+                { "key": "subject", "value": "Physics", "description": "Filter by subject" },
+                { "key": "exam", "value": "JEE", "description": "Filter by exam specialty" },
+                { "key": "rating", "value": "4.5", "description": "Minimum rating" }
+              ]
+            },
+            "description": "Browse educators. Optional query parameters: subject, exam, rating."
+          },
+          "response": [
+            {
+              "name": "Success",
+              "originalRequest": {},
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                { "key": "Content-Type", "value": "application/json" }
+              ],
+              "body": "{\n  \"success\": true,\n  \"educators\": [\n    {\n      \"id\": 10,\n      \"name\": \"Dr. Sarah Kumar\",\n      \"subjects\": [\"Physics\"],\n      \"experience\": \"8 years\",\n      \"rating\": 4.8,\n      \"totalStudents\": 50000,\n      \"courses\": 12,\n      \"image\": \"educator_image_url\",\n      \"isVerified\": true\n    }\n  ]\n}"
+            }
+          ]
+        },
+        {
+          "name": "Browse Educators with Filters",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/educators?subject=Physics&exam=JEE&rating=4.5",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "educators"],
+              "query": [
+                { "key": "subject", "value": "Physics" },
+                { "key": "exam", "value": "JEE" },
+                { "key": "rating", "value": "4.5" }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Educator Profile",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/educators/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "educators", "1"]
+            }
+          },
+          "response": [
+            {
+              "name": "Success",
+              "originalRequest": {},
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [],
+              "body": "{\n  \"success\": true,\n  \"data\": {\n    \"id\": 10,\n    \"name\": \"Dr. Sarah Kumar\",\n    \"subjects\": [\"Physics\"],\n    \"experience\": \"8 years\",\n    \"rating\": 4.8,\n    \"totalStudents\": 50000,\n    \"courses\": 12,\n    \"image\": \"educator_image_url\",\n    \"isVerified\": true,\n    \"stats\": {\n      \"coursesCount\": 12,\n      \"studentsCount\": 50000\n    }\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Follow Educator",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{learnerToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/educators/1/follow",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "educators", "1", "follow"]
+            }
+          },
+          "response": [
+            {
+              "name": "Success",
+              "originalRequest": {},
+              "status": "Created",
+              "code": 201,
+              "body": "{\n  \"success\": true,\n  \"message\": \"Educator followed successfully\"\n}",
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "name": "Already Following",
+              "originalRequest": {},
+              "status": "Bad Request",
+              "code": 400,
+              "body": "{\n  \"success\": false,\n  \"message\": \"Already following this educator\"\n}",
+              "_postman_previewlanguage": "json"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Progress & Analytics",
+      "item": [
+        {
+          "name": "Get Learning Dashboard",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{learnerToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/progress/dashboard",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "progress", "dashboard"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Course Progress",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{learnerToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/progress/course/{{courseId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "progress",
+                "course",
+                "{{courseId}}"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Success",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{learnerToken}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/progress/course/{{courseId}}",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "progress",
+                    "course",
+                    "{{courseId}}"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n    \"success\": true,\n    \"progress\": {\n        \"courseId\": 101,\n        \"enrolledOn\": \"2024-01-15\",\n        \"validity\": \"2024-07-15\",\n        \"overallProgress\": 45,\n        \"chapters\": [\n            {\n                \"name\": \"Mechanics\",\n                \"progress\": 80,\n                \"completedLessons\": 8,\n                \"totalLessons\": 10\n            }\n        ],\n        \"testsAttempted\": 5,\n        \"avgTestScore\": 78,\n        \"certificateEligible\": false\n    }\n}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Subscriptions",
+      "item": [
+        {
+          "name": "Get Subscription Plans",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/subscriptions/plans",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "subscriptions", "plans"]
+            }
+          },
+          "response": [
+            {
+              "name": "Success",
+              "originalRequest": {},
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n    \"success\": true,\n    \"plans\": [\n        {\n            \"id\": 1,\n            \"name\": \"Plus\",\n            \"price\": 999,\n            \"duration\": \"monthly\",\n            \"features\": [\n                \"Access to all Plus courses\",\n                \"Live classes\",\n                \"Doubt clearing sessions\",\n                \"Test series\"\n            ]\n        },\n        {\n            \"id\": 2,\n            \"name\": \"Iconic\",\n            \"price\": 2999,\n            \"duration\": \"monthly\",\n            \"features\": [\n                \"Everything in Plus\",\n                \"Top educator courses\",\n                \"Personal mentorship\",\n                \"Priority doubt solving\"\n            ]\n        }\n    ]\n}"
+            }
+          ]
+        },
+        {
+          "name": "Purchase Subscription",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{learnerToken}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"planId\": 1,\n  \"paymentMethod\": \"card\",\n  \"couponCode\": \"DISCOUNT10\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/subscriptions/purchase",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "subscriptions",
+                "purchase"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Success",
+              "originalRequest": {},
+              "status": "Created",
+              "code": 201,
+              "_postman_previewlanguage": "json",
+              "header": [],
+              "body": "{\n  \"success\": true,\n  \"message\": \"Subscription purchased successfully\",\n  \"data\": {\n    \"subscription\": {\n      \"id\": 10,\n      \"userId\": 1,\n      \"planId\": 1,\n      \"planName\": \"Plus\",\n      \"planType\": \"premium\",\n      \"price\": 999,\n      \"features\": [\n        \"Access to all Plus courses\",\n        \"Live classes\",\n        \"Doubt clearing sessions\",\n        \"Test series\"\n      ],\n      \"startDate\": \"2024-07-01T00:00:00.000Z\",\n      \"endDate\": \"2024-07-31T23:59:59.000Z\",\n      \"status\": \"active\"\n    },\n    \"payment\": {\n      \"originalPrice\": 999,\n      \"discountAmount\": 100,\n      \"finalPrice\": 899,\n      \"paymentMethod\": \"card\"\n    }\n  }\n}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Doubts/Q&A",
+      "item": [
+        {
+          "name": "Post Doubt 1",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{learnerToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"courseId\": {{courseId}},\n  \"lessonId\": {{lessonId}},\n  \"question\": \"Why is acceleration constant in free fall?\",\n  \"attachments\": [\"http://local\"]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/doubts",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "doubts"]
+            }
+          },
+          "response": [
+            {
+              "name": "Success",
+              "originalRequest": {},
+              "status": "Created",
+              "code": 201,
+              "_postman_previewlanguage": "json",
+              "header": [],
+              "body": "{\n  \"success\": true,\n  \"message\": \"Doubt posted successfully\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Post Doubt 2",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{learnerToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"courseId\": {{courseId}},\n  \"lessonId\": {{lessonId}},\n  \"question\": \"What is Newton's second law?\",\n  \"attachments\": [\"http://local2\"]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/doubts",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "doubts"]
+            }
+          },
+          "response": [
+            {
+              "name": "Success",
+              "originalRequest": {},
+              "status": "Created",
+              "code": 201,
+              "_postman_previewlanguage": "json",
+              "header": [],
+              "body": "{\n  \"success\": true,\n  \"message\": \"Doubt posted successfully\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Post Doubt 3",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{learnerToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"courseId\": {{courseId}},\n  \"lessonId\": {{lessonId}},\n  \"question\": \"How does friction affect motion?\",\n  \"attachments\": [\"http://local3\"]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/doubts",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "doubts"]
+            }
+          },
+          "response": [
+            {
+              "name": "Success",
+              "originalRequest": {},
+              "status": "Created",
+              "code": 201,
+              "_postman_previewlanguage": "json",
+              "header": [],
+              "body": "{\n  \"success\": true,\n  \"message\": \"Doubt posted successfully\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Post Doubt 4",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{learnerToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"courseId\": {{courseId}},\n  \"lessonId\": {{lessonId}},\n  \"question\": \"Explain the difference between speed and velocity.\",\n  \"attachments\": [\"http://local4\"]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/doubts",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "doubts"]
+            }
+          },
+          "response": [
+            {
+              "name": "Success",
+              "originalRequest": {},
+              "status": "Created",
+              "code": 201,
+              "_postman_previewlanguage": "json",
+              "header": [],
+              "body": "{\n  \"success\": true,\n  \"message\": \"Doubt posted successfully\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Post Doubt 5",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{learnerToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"courseId\": {{courseId}},\n  \"lessonId\": {{lessonId}},\n  \"question\": \"What is the unit of force?\",\n  \"attachments\": [\"http://local5\"]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/doubts",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "doubts"]
+            }
+          },
+          "response": [
+            {
+              "name": "Success",
+              "originalRequest": {},
+              "status": "Created",
+              "code": 201,
+              "_postman_previewlanguage": "json",
+              "header": [],
+              "body": "{\n  \"success\": true,\n  \"message\": \"Doubt posted successfully\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Get My Doubts",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{learnerToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/doubts/my",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "doubts",
+                "my"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Success",
+              "originalRequest": {},
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [],
+              "body": "{\n  \"success\": true,\n  \"doubts\": [\n    {\n      \"id\": 1,\n      \"userId\": 9,\n      \"courseId\": 101,\n      \"lessonId\": 1001,\n      \"question\": \"Why is acceleration constant in free fall?\",\n      \"answer\": \"Because gravity is constant near the Earth's surface.\",\n      \"answeredBy\": 2,\n      \"answeredAt\": \"2024-06-25T10:00:00.000Z\",\n      \"attachments\": [\"image_url\"],\n      \"isActive\": 1,\n      \"createdAt\": \"2024-06-25T09:00:00.000Z\",\n      \"updatedAt\": \"2024-06-25T10:00:00.000Z\"\n    }\n  ]\n}"
+            }
+          ]
+        },
+        {
+          "name": "Answer Doubt",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{educatorToken}}", "type": "text" },
+              { "key": "Content-Type", "value": "application/json", "type": "text" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"answer\": \"Acceleration is constant because gravity provides a constant force.\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/doubts/1/answer",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "doubts", "1", "answer"]
+            },
+            "description": "Educator only. The answer field must be 10-2000 characters."
+          },
+          "response": [
+            {
+              "name": "Success",
+              "originalRequest": {},
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [],
+              "body": "{\n  \"success\": true,\n  \"message\": \"Doubt answered successfully\"\n}"
+            },
+            {
+              "name": "Validation Error",
+              "originalRequest": {},
+              "status": "Bad Request",
+              "code": 400,
+              "_postman_previewlanguage": "json",
+              "header": [],
+              "body": "{\n  \"success\": false,\n  \"message\": \"Validation failed\",\n  \"errors\": [\n    {\n      \"field\": \"answer\",\n      \"message\": \"Answer must be between 10 and 2000 characters\"\n    }\n  ]\n}"
+            },
+            {
+              "name": "Not Found",
+              "originalRequest": {},
+              "status": "Not Found",
+              "code": 404,
+              "_postman_previewlanguage": "json",
+              "header": [],
+              "body": "{\n  \"success\": false,\n  \"message\": \"Doubt not found\"\n}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Study Materials",
+      "item": [
+        {
+          "name": "Get Course Materials",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{learnerToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/materials/course/{{courseId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "materials", "course", "{{courseId}}"]
+            }
+          },
+          "response": [
+            {
+              "name": "Success",
+              "originalRequest": {},
+              "status": 200,
+              "body": "{\n  \"success\": true,\n  \"data\": [ { /* ...material fields... */ } ]\n}",
+              "header": [
+                { "key": "Content-Type", "value": "application/json" }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "Track Material Download",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{learnerToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/materials/1/download",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "materials", "1", "download"]
+            }
+          },
+          "response": [
+            {
+              "name": "Success",
+              "originalRequest": {},
+              "status": 201,
+              "body": "{\n  \"success\": true,\n  \"message\": \"Material download recorded\"\n}",
+              "header": [
+                { "key": "Content-Type", "value": "application/json" }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Search",
+      "item": [
+        {
+          "name": "Global Search",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/search?q=physics",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "search"],
+              "query": [
+                { "key": "q", "value": "physics" }
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Success",
+              "originalRequest": {},
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [],
+              "body": "{\n  \"success\": true,\n  \"results\": {\n    \"courses\": [\n      {\n        \"id\": 1,\n        \"title\": \"Physics for JEE\",\n        \"subject\": \"Physics\",\n        \"educator\": \"Dr. Sharma\"\n      }\n    ],\n    \"educators\": [\n      {\n        \"id\": 2,\n        \"firstName\": \"Dr.\",\n        \"lastName\": \"Sharma\",\n        \"subjects\": \"Physics, Chemistry\"\n      }\n    ],\n    \"lessons\": [\n      {\n        \"id\": 3,\n        \"title\": \"Newton's Laws\",\n        \"courseId\": 1\n      }\n    ]\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Search with Type Filter",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/search?q=physics&type=courses",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "search"],
+              "query": [
+                { "key": "q", "value": "physics" },
+                { "key": "type", "value": "courses" }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Reviews",
+      "item": [
+        {
+          "name": "Get Course Reviews",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/reviews/course/{{courseId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "reviews", "course", "{{courseId}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Review Course",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{learnerToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"rating\": 4,\n  \"title\": \"Excellent course!\",\n  \"comment\": \"Excellent course with detailed explanations\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/reviews/courses/{{courseId}}/review",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "reviews", "courses", "{{courseId}}", "review"]
+            }
+          },
+          "response": [
+            {
+              "name": "Success",
+              "originalRequest": {},
+              "status": "Created",
+              "code": 201,
+              "_postman_previewlanguage": "json",
+              "header": [],
+              "body": "{\n  \"success\": true,\n  \"message\": \"Review submitted successfully\",\n  \"review\": {\n    \"id\": 10,\n    \"userId\": 1,\n    \"courseId\": 1,\n    \"rating\": 4,\n    \"title\": \"Excellent course!\",\n    \"comment\": \"Excellent course with detailed explanations\",\n    \"createdAt\": \"2025-06-25T17:30:00.000Z\"\n  }\n}"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3000"
+    },
+    {
+      "key": "learnerToken",
+      "value": ""
+    },
+    {
+      "key": "educatorToken",
+      "value": ""
+    },
+    {
+      "key": "courseId",
+      "value": "1"
+    },
+    {
+      "key": "lessonId",
+      "value": "1"
+    },
+    {
+      "key": "testId",
+      "value": "1"
+    },
+    {
+      "key": "materialId",
+      "value": "1"
+    },
+    {
+      "key": "doubtId",
+      "value": "1"
+    },
+    {
+      "key": "educatorId",
+      "value": "1"
+    },
+    {
+      "key": "learner_email",
+      "value": "testlearner@example.com"
+    },
+    {
+      "key": "educator_email",
+      "value": "testeducator@example.com"
+    }
+  ]
+} 

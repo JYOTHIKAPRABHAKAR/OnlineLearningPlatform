@@ -1,0 +1,538 @@
+ ### Online Learning Platform API - Complete Test Suite
+### Base URL: http://localhost:3000
+
+### Variables
+@baseUrl = http://localhost:3000
+@learnerToken = {{loginLearner.response.body.data.token}}
+@educatorToken = {{loginEducator.response.body.data.token}}
+
+### ========================================
+### HEALTH CHECK
+### ========================================
+
+### Health Check
+GET {{baseUrl}}/
+Content-Type: application/json
+
+### ========================================
+### AUTHENTICATION ENDPOINTS
+### ========================================
+
+### Register a new learner
+# @name registerLearner
+POST {{baseUrl}}/api/auth/register
+Content-Type: application/json
+
+{
+    "email": "testlearner@example.com",
+    "password": "TestPass123",
+    "firstName": "Test",
+    "lastName": "Learner",
+    "targetExam": "JEE Main",
+    "preferredLanguage": "English",
+    "phone": "+91-9876543210"
+}
+
+### Register a new educator
+# @name registerEducator
+POST {{baseUrl}}/api/auth/educator/register
+Content-Type: application/json
+
+{
+    "email": "testeducator@example.com",
+    "password": "TestPass123",
+    "firstName": "Test",
+    "lastName": "Educator",
+    "bio": "Experienced educator with 10+ years of teaching",
+    "subjects": "Mathematics,Physics",
+    "experience": 10,
+    "qualification": "Ph.D. Mathematics, IIT Delhi"
+}
+
+### Login as learner (using seeded data)
+# @name loginLearner
+POST {{baseUrl}}/api/auth/login
+Content-Type: application/json
+
+{
+    "email": "john.doe@example.com",
+    "password": "password123"
+}
+
+### Login as educator (using seeded data)
+# @name loginEducator
+POST {{baseUrl}}/api/auth/login
+Content-Type: application/json
+
+{
+    "email": "prof.kumar@example.com",
+    "password": "password123"
+}
+
+### Get current user profile
+GET {{baseUrl}}/api/auth/profile
+Authorization: Bearer {{learnerToken}}
+
+### Update user profile
+PUT {{baseUrl}}/api/auth/profile
+Authorization: Bearer {{learnerToken}}
+Content-Type: application/json
+
+{
+    "firstName": "Updated",
+    "lastName": "Name",
+    "targetExam": "NEET",
+    "preferredLanguage": "Hindi"
+}
+
+### Change password
+PUT {{baseUrl}}/api/auth/change-password
+Authorization: Bearer {{learnerToken}}
+Content-Type: application/json
+
+{
+    "currentPassword": "password123",
+    "newPassword": "NewPass123"
+}
+
+### ========================================
+### COURSE ENDPOINTS
+### ========================================
+
+### Browse courses (public)
+GET {{baseUrl}}/api/courses?exam=JEE Main&subject=Mathematics&type=recorded&page=1&limit=10
+
+### Browse courses with filters
+GET {{baseUrl}}/api/courses?minPrice=1000&maxPrice=5000&sort=price&order=ASC
+
+### Get course details (public)
+GET {{baseUrl}}/api/courses/1
+
+### Get course reviews (title is never null)
+GET {{baseUrl}}/api/courses/1/reviews
+
+# Example response:
+# {
+#   "success": true,
+#   "reviews": [
+#     {
+#       "id": 1,
+#       "userId": 1,
+#       "courseId": 1,
+#       "rating": 5,
+#       "title": "Excellent course!", # never null
+#       "comment": "The explanations are very clear and the practice questions are helpful.",
+#       ...
+#     },
+#     {
+#       "id": 9,
+#       "userId": 9,
+#       "courseId": 1,
+#       "rating": 4,
+#       "title": "", # never null, empty string if missing
+#       "comment": "Excellent course with detailed explanations",
+#       ...
+#     }
+#   ]
+# }
+
+### Enroll in course (requires authentication)
+POST {{baseUrl}}/api/courses/1/enroll
+Authorization: Bearer {{learnerToken}}
+
+### Get course progress (requires enrollment)
+GET {{baseUrl}}/api/courses/1/progress
+Authorization: Bearer {{learnerToken}}
+
+### Get course lessons (requires enrollment)
+GET {{baseUrl}}/api/courses/1/lessons
+Authorization: Bearer {{learnerToken}}
+
+### Get course tests (requires enrollment)
+GET {{baseUrl}}/api/courses/1/tests
+Authorization: Bearer {{learnerToken}}
+
+### Get course study materials (requires enrollment)
+# NOTE: You must be enrolled in the course to get materials. Use a valid learner token.
+GET {{baseUrl}}/api/materials/course/1
+Authorization: Bearer {{learnerToken}}
+
+# Example response:
+# {
+#     "success": true,
+#     "materials": [
+#         {
+#             "id": 1,
+#             "title": "JEE Main Mathematics Formula Sheet",
+#             "type": "pdf",
+#             "chapter": "",
+#             "size": "2 MB",
+#             "downloadUrl": "https://storage.example.com/materials/jee-math-formulas.pdf",
+#             "downloadCount": 450
+#         },
+#         {
+#             "id": 2,
+#             "title": "Algebra Practice Questions",
+#             "type": "pdf",
+#             "chapter": "",
+#             "size": "1.5 MB",
+#             "downloadUrl": "https://storage.example.com/materials/algebra-practice.pdf",
+#             "downloadCount": 320
+#         }
+#     ]
+# }
+
+### ========================================
+### LESSON ENDPOINTS
+### ========================================
+
+### Get lesson details (requires enrollment)
+GET {{baseUrl}}/api/lessons/1
+Authorization: Bearer {{learnerToken}}
+
+### Update lesson progress (requires enrollment)
+POST {{baseUrl}}/api/lessons/1/progress
+Authorization: Bearer {{learnerToken}}
+Content-Type: application/json
+
+{
+    "watchedDuration": 1800,
+    "totalDuration": 2700,
+    "completionStatus": "in_progress"
+}
+
+### Save lesson notes (requires enrollment)
+POST {{baseUrl}}/api/lessons/1/notes
+Authorization: Bearer {{learnerToken}}
+Content-Type: application/json
+
+{
+    "note": "Important concept about algebra",
+    "timestamp": 120
+}
+
+### Get lesson notes (requires enrollment)
+GET {{baseUrl}}/api/lessons/1/notes
+Authorization: Bearer {{learnerToken}}
+
+### Get free lessons for a course (public)
+GET {{baseUrl}}/api/lessons/course/1/free
+
+### ========================================
+### TEST ENDPOINTS
+### ========================================
+
+### Get tests for a course (returns a demo if none exist)
+GET {{baseUrl}}/api/tests?courseId=1&type=mock_test
+Authorization: Bearer {{learnerToken}}
+
+### Get tests with filters (returns a demo if none exist)
+GET {{baseUrl}}/api/tests?courseId=1&type=mock
+Authorization: Bearer {{learnerToken}}
+
+# Example response if no real tests exist:
+# {
+#   "success": true,
+#   "tests": [
+#     {
+#       "id": 0,
+#       "title": "Demo Mock Test",
+#       "type": "mock_test",
+#       "questions": 10,
+#       "duration": 60,
+#       "maxMarks": 100,
+#       "attemptedBy": 0,
+#       "avgScore": 0,
+#       "difficulty": "moderate"
+#     }
+#   ]
+# }
+
+### Start a test (requires enrollment)
+POST {{baseUrl}}/api/tests/1/start
+Authorization: Bearer {{learnerToken}}
+
+### Submit test answers (score increases by 10 for each correct answer)
+POST {{baseUrl}}/api/tests/session_001/submit
+Authorization: Bearer {{learnerToken}}
+Content-Type: application/json
+
+{
+    "answers": [
+        { "questionId": 1, "selectedOption": "4" },
+        { "questionId": 2, "selectedOption": "wrong" },
+        { "questionId": 3, "selectedOption": "3x²" }
+    ],
+    "timeSpent": 180
+}
+
+# Example response if 2 answers are correct:
+# {
+#   "success": true,
+#   "result": {
+#     "score": 20,
+#     "maxScore": 30,
+#     "rank": 1,
+#     "percentile": 99.5,
+#     "correct": 2,
+#     "incorrect": 1,
+#     "unattempted": 0,
+#     "analysis": {
+#       "demo": { "score": 20, "accuracy": "67%" }
+#     }
+#   }
+# }
+
+### Get test results
+GET {{baseUrl}}/api/tests/session_001/results
+Authorization: Bearer {{learnerToken}}
+
+### Get user's test history
+GET {{baseUrl}}/api/tests/history?limit=10
+Authorization: Bearer {{learnerToken}}
+
+### ========================================
+### ERROR TESTING
+### ========================================
+
+### Test 400 Bad Request - Invalid email
+POST {{baseUrl}}/api/auth/register
+Content-Type: application/json
+
+{
+    "email": "invalid-email",
+    "password": "TestPass123",
+    "firstName": "Test",
+    "lastName": "User"
+}
+
+### Test 401 Unauthorized - Missing token
+GET {{baseUrl}}/api/auth/profile
+
+### Test 404 Not Found - Non-existent course
+GET {{baseUrl}}/api/courses/999
+
+### Test 422 Validation Error - Missing required fields
+POST {{baseUrl}}/api/auth/register
+Content-Type: application/json
+
+{
+    "email": "test@example.com"
+}
+
+var jsonData = pm.response.json();
+if (jsonData.data && jsonData.data.token) {
+    pm.environment.set("jwt_token", jsonData.data.token);
+}
+
+### Track Material Download (requires enrollment)
+# NOTE: You must be enrolled in the course and use a valid materialId from the materials list.
+POST {{baseUrl}}/api/materials/1/download
+Authorization: Bearer {{learnerToken}}
+
+# Example response:
+# {
+#     "success": true,
+#     "message": "Material download recorded"
+# }
+
+### Get live classes for a course (returns a demo if none exist)
+GET {{baseUrl}}/api/live-classes/schedule?courseId=1
+Authorization: Bearer {{learnerToken}}
+
+### Browse educators (requires educator token)
+GET {{baseUrl}}/api/educators?subject=Physics&rating=4.5
+Authorization: Bearer {{educatorToken}}
+
+### Browse educators with filters (requires educator token)
+GET {{baseUrl}}/api/educators?subject=Physics&rating=4.5
+Authorization: Bearer {{educatorToken}}
+
+### Get educator profile (profileImage will always be a valid URL)
+GET {{baseUrl}}/api/educators/1
+Authorization: Bearer {{educatorToken}}
+
+### Purchase subscription (requires authentication, returns subscription and payment details)
+POST {{baseUrl}}/api/subscriptions/purchase
+Authorization: Bearer {{learnerToken}}
+Content-Type: application/json
+
+{
+    "planId": 1,
+    "paymentMethod": "credit_card",
+    "couponCode": "DISCOUNT10"
+}
+
+### Post a doubt (doubt 1)
+POST {{baseUrl}}/api/doubts
+Authorization: Bearer {{learnerToken}}
+Content-Type: application/json
+
+{
+    "courseId": {{courseId}},
+    "lessonId": {{lessonId}},
+    "question": "Why is acceleration constant in free fall?",
+    "attachments": ["http://local"]
+}
+
+### Post a doubt (doubt 2)
+POST {{baseUrl}}/api/doubts
+Authorization: Bearer {{learnerToken}}
+Content-Type: application/json
+
+{
+    "courseId": {{courseId}},
+    "lessonId": {{lessonId}},
+    "question": "What is Newton's second law?",
+    "attachments": ["http://local2"]
+}
+
+### Post a doubt (doubt 3)
+POST {{baseUrl}}/api/doubts
+Authorization: Bearer {{learnerToken}}
+Content-Type: application/json
+
+{
+    "courseId": {{courseId}},
+    "lessonId": {{lessonId}},
+    "question": "How does friction affect motion?",
+    "attachments": ["http://local3"]
+}
+
+### Post a doubt (doubt 4)
+POST {{baseUrl}}/api/doubts
+Authorization: Bearer {{learnerToken}}
+Content-Type: application/json
+
+{
+    "courseId": {{courseId}},
+    "lessonId": {{lessonId}},
+    "question": "Explain the difference between speed and velocity.",
+    "attachments": ["http://local4"]
+}
+
+### Post a doubt (doubt 5)
+POST {{baseUrl}}/api/doubts
+Authorization: Bearer {{learnerToken}}
+Content-Type: application/json
+
+{
+    "courseId": {{courseId}},
+    "lessonId": {{lessonId}},
+    "question": "What is the unit of force?",
+    "attachments": ["http://local5"]
+}
+
+### Get my doubts (answer fields only present if answered)
+GET {{baseUrl}}/api/doubts/my
+Authorization: Bearer {{learnerToken}}
+
+# Example response (unanswered):
+# {
+#   "success": true,
+#   "doubts": [
+#     {
+#       "id": 5,
+#       "userId": 10,
+#       "courseId": 1,
+#       "lessonId": 1,
+#       "question": "Why is acceleration constant in free fall?",
+#       "attachments": ["http://local"],
+#       "isActive": 1,
+#       "createdAt": "2025-06-25T18:20:19.082Z",
+#       "updatedAt": "2025-06-25 18:20:19"
+#     }
+#   ]
+# }
+#
+# Example response (answered):
+# {
+#   "success": true,
+#   "doubts": [
+#     {
+#       "id": 6,
+#       "userId": 10,
+#       "courseId": 1,
+#       "lessonId": 1,
+#       "question": "Why is acceleration constant in free fall?",
+#       "answer": "Acceleration is constant in free fall because gravity is constant near the Earth's surface.",
+#       "answeredBy": 1,
+#       "answeredByName": "Prof Kumar",
+#       "answeredAt": "2025-06-25T19:00:00.000Z",
+#       "attachments": ["http://local"],
+#       "isActive": 1,
+#       "createdAt": "2025-06-25T18:20:19.082Z",
+#       "updatedAt": "2025-06-25 18:20:19"
+#     }
+#   ]
+# }
+
+### Answer a doubt (educator only)
+POST {{baseUrl}}/api/doubts/1/answer
+Authorization: Bearer {{educatorToken}}
+Content-Type: application/json
+
+{
+    "answer": "Acceleration is constant in free fall because gravity is constant near the Earth's surface."
+}
+
+### Global Search (never returns null image, always at least one lesson and one educator)
+GET {{baseUrl}}/api/search?q=physics
+Authorization: Bearer {{learnerToken}}
+
+# Example response:
+# {
+#   "success": true,
+#   "results": {
+#     "courses": [
+#       {
+#         "id": 6,
+#         "title": "JEE Advanced Physics",
+#         ...
+#       }
+#     ],
+#     "educators": [
+#       {
+#         "id": 1,
+#         "profileImage": "https://ui-avatars.com/api/?name=Educator&background=random",
+#         ...
+#       }
+#     ],
+#     "lessons": [
+#       {
+#         "id": 1,
+#         "title": "Demo Lesson",
+#         ...
+#       }
+#     ]
+#   }
+# }
+# NOTE: The API will always return at least one educator and one lesson in the results array for demo/testability.
+
+### Post a course review (RESTful, requires enrollment)
+# NOTE: The correct endpoint is POST /api/reviews/courses/1/review
+# The old endpoint POST /api/courses/1/review is deprecated and will return 404.
+POST {{baseUrl}}/api/reviews/courses/1/review
+Authorization: Bearer {{learnerToken}}
+Content-Type: application/json
+
+{
+    "rating": 5,
+    "title": "Excellent course!",
+    "comment": "The explanations are very clear and the practice questions are helpful."
+}
+
+# Example response:
+# {
+#   "success": true,
+#   "message": "Review submitted successfully",
+#   "review": {
+#     "id": 10,
+#     "userId": 1,
+#     "courseId": 1,
+#     "rating": 5,
+#     "title": "Excellent course!",
+#     "comment": "The explanations are very clear and the practice questions are helpful.",
+#     "createdAt": "2025-06-25T17:30:00.000Z"
+#   }
+# } 
